@@ -1,0 +1,59 @@
+package cn.featherfly.jdbc.datasource;
+
+import javax.annotation.Resource;
+
+import org.apache.log4j.xml.DOMConfigurator;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
+import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
+import cn.featherfly.common.lang.ClassLoaderUtils;
+import cn.featherfly.common.lang.RandomUtils;
+import cn.featherfly.jdbc.datasource.service.UserService;
+
+/**
+ * <p>
+ * ReadWriteDataSourceTest
+ * </p>
+ * 
+ * @author 钟冀
+ */
+@ContextConfiguration(locations = {"classpath:app.xml"})
+@ActiveProfiles("dev")
+@Rollback(false)
+public class ReadWriteDataSourceTest extends AbstractTransactionalTestNGSpringContextTests {
+
+    @Resource
+    UserService userService;
+    
+    @BeforeClass
+    public void init() {
+        DOMConfigurator.configure(ClassLoaderUtils.getResource("log4j.xml", this.getClass()));
+    }
+    
+    @Test
+    public void testWriteRead() {
+//        User user = new User();
+//        user.setUsername("name_" + RandomUtils.getRandomInt(1000));
+//        userService.save(user);
+//        user = new User();
+//        user.setUsername("name_" + RandomUtils.getRandomInt(1000));
+//        userService.save(user);
+//        user = new User();
+//        user.setUsername("name_" + RandomUtils.getRandomInt(1000));
+//        userService.save(user);
+        
+//        userService.save2(user);
+        
+//        User u  = userService.get(user.getId());
+//        System.out.println(u.getId());
+        
+//        Assert.assertNull(u);
+        
+        System.out.println(userService.get(1000001l));
+    }
+}
