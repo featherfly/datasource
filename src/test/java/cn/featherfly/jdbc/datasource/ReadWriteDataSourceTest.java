@@ -6,6 +6,7 @@ import org.apache.log4j.xml.DOMConfigurator;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -24,9 +25,10 @@ import cn.featherfly.jdbc.datasource.service.UserService;
  */
 @ContextConfiguration(locations = {"classpath:app.xml"})
 @ActiveProfiles("dev")
-@Rollback(false)
-public class ReadWriteDataSourceTest extends AbstractTransactionalTestNGSpringContextTests {
-
+//@Rollback(false)
+//public class ReadWriteDataSourceTest extends AbstractTransactionalTestNGSpringContextTests {
+public class ReadWriteDataSourceTest extends AbstractTestNGSpringContextTests {
+    
     @Resource
     UserService userService;
     
@@ -37,9 +39,12 @@ public class ReadWriteDataSourceTest extends AbstractTransactionalTestNGSpringCo
     
     @Test
     public void testWriteRead() {
-//        User user = new User();
-//        user.setUsername("name_" + RandomUtils.getRandomInt(1000));
-//        userService.save(user);
+        
+        System.out.println(userService.get(1000001l));
+        
+        User user = new User();
+        user.setUsername("name_" + RandomUtils.getRandomInt(1000));
+        User wu = userService.save(user);
 //        user = new User();
 //        user.setUsername("name_" + RandomUtils.getRandomInt(1000));
 //        userService.save(user);
@@ -49,10 +54,11 @@ public class ReadWriteDataSourceTest extends AbstractTransactionalTestNGSpringCo
         
 //        userService.save2(user);
         
-//        User u  = userService.get(user.getId());
-//        System.out.println(u.getId());
+        Assert.assertEquals(wu.getUsername(), user.getUsername());
         
-//        Assert.assertNull(u);
+        User ru  = userService.get(user.getId());
+        Assert.assertNull(ru);
+        
         
         System.out.println(userService.get(1000001l));
     }

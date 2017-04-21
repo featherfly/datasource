@@ -1,22 +1,12 @@
 package cn.featherfly.jdbc.datasource;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.management.RuntimeErrorException;
-
-import org.aopalliance.intercept.MethodInterceptor;
-import org.aopalliance.intercept.MethodInvocation;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.aop.aspectj.MethodInvocationProceedingJoinPoint;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.interceptor.RuleBasedTransactionAttribute;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.transaction.interceptor.TransactionAttribute;
-import org.springframework.util.PatternMatchUtils;
 
 /**
  * 
@@ -79,7 +69,7 @@ import org.springframework.util.PatternMatchUtils;
  * 
  * </pre>
  */
-public class ReadWriteDataSourceProcessor2 implements MethodInterceptor {
+public class ReadWriteDataSourceProcessor2 {
 
     private static final Logger log = LoggerFactory.getLogger(ReadWriteDataSourceProcessor2.class);
 
@@ -113,14 +103,14 @@ public class ReadWriteDataSourceProcessor2 implements MethodInterceptor {
                 choice = true;
             }
             
-            System.out.println();
-            System.out.println(methodSignature.getMethod().getName() + " isRead " + isChoiceReadDB(txAttr));
-            System.out.println();
-            
             if (isChoiceReadDB(txAttr)) {
                 ReadWriteDataSourceDecision.markRead();
+                log.debug("read transaction process for {}.{}", pjp.getSignature().getDeclaringTypeName()
+                        , pjp.getSignature().getName());
             } else {
                 ReadWriteDataSourceDecision.markWrite();
+                log.debug("write transaction process for {}.{}", pjp.getSignature().getDeclaringTypeName()
+                        , pjp.getSignature().getName());
             }
 
             try {
@@ -133,37 +123,7 @@ public class ReadWriteDataSourceProcessor2 implements MethodInterceptor {
         }
 
         throw new RuntimeException("! pjp.getSignature() instanceof MethodSignature");
-
-        // boolean choice = false;
-        // if (ReadWriteDataSourceDecision.isChoiceNone()) {
-        // // 表示第一个标记，事物可能嵌套，所有只有第一个标记的才才能进行清除
-        // choice = true;
-        // }
-        // if (isChoiceReadDB(pjp.getSignature().getName())) {
-        // ReadWriteDataSourceDecision.markRead();
-        // } else {
-        // ReadWriteDataSourceDecision.markWrite();
-        // }
-        //
-        // try {
-        // return pjp.proceed();
-        // } finally {
-        // if (choice) ReadWriteDataSourceDecision.reset();
-        // }
-
     }
-
-    // private boolean isChoiceWriteDB(String methodName) {
-    // String bestNameMatch = null;
-    // for (String mappedName : this.writeMethodSet) {
-    // if (isMatch(methodName, mappedName)) {
-    // bestNameMatch = mappedName;
-    // break;
-    // }
-    // }
-    // Boolean isChoiceWirte = readMethodMap.get(bestNameMatch);
-    // return isChoiceWirte == Boolean.TRUE;
-    // }
 
     private boolean isChoiceReadDB(TransactionAttribute txAttr) {
         if (forceChoiceReadWhenWrite) {
@@ -175,10 +135,6 @@ public class ReadWriteDataSourceProcessor2 implements MethodInterceptor {
             return false;
         }
         return txAttr.isReadOnly();
-    }
-
-    protected boolean isMatch(String methodName, String mappedName) {
-        return PatternMatchUtils.simpleMatch(mappedName, methodName);
     }
 
     /**
@@ -198,14 +154,5 @@ public class ReadWriteDataSourceProcessor2 implements MethodInterceptor {
      */
     public void setTransactionAspectSupport(TransactionAspectSupport transactionAspectSupport) {
         this.transactionAspectSupport = transactionAspectSupport;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Object invoke(MethodInvocation invocation) throws Throwable {
-        // YUFEI_TODO Auto-generated method stub
-        return null;
     }
 }

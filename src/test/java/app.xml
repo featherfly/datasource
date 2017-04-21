@@ -105,6 +105,9 @@
 		</tx:attributes>
 	</tx:advice>
 
+<!-- 	<bean id="readWriteDataSourceTransactionProcessor" -->
+<!-- 		class="cn.featherfly.jdbc.datasource.ReadWriteDataSourceProcessor" -->
+<!-- 		p:forceChoiceReadWhenWrite="false"/> -->
 	<bean id="readWriteDataSourceTransactionProcessor"
 		class="cn.featherfly.jdbc.datasource.ReadWriteDataSourceProcessor2"
 		p:forceChoiceReadWhenWrite="false" p:transactionAspectSupport-ref="txAdvice"/>

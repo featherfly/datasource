@@ -84,7 +84,6 @@ public class ReadWriteDataSource extends AbstractDataSource implements Initializ
     
     
     private DataSource determineDataSource() {
-        System.out.println(LangUtils.getInvokers());
         if(ReadWriteDataSourceDecision.isChoiceWrite()) {
             log.trace("current determine write datasource");
             return writeDataSource;

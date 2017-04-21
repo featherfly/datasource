@@ -98,7 +98,7 @@ public class ReadWriteDataSourceProcessor implements BeanPostProcessor {
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-
+        System.out.println(bean.getClass());
         if(!(bean instanceof NameMatchTransactionAttributeSource)) {
             return bean;
         }
