@@ -35,9 +35,11 @@ public class UserService {
         return get(user.getId());
     }
     
-    public User save2(User user) {
-        System.out.println("invoke save2");
-        throw new RuntimeException("save2 exception");
+    public User saveWithException(User u1, User u2) {
+        System.out.println("invoke saveWithException");
+        save(u1);
+        save(u2);
+        throw new RuntimeException("saveWithException exception");
     }
     
     @Transactional(readOnly = true)

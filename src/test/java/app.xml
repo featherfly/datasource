@@ -71,17 +71,6 @@
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 	
-<!-- 	<bean id="txAdvice" -->
-<!--     class="cn.featherfly.jdbc.datasource.ReadWriteDataSourceTransactionInterceptor"> -->
-<!-- 		<property name="transactionManager" ref="transactionManager" /> -->
-<!-- 		<property name="transactionAttributes"> -->
-<!-- 			<props> -->
-<!-- 				<prop key="save*">PROPAGATION_REQUIRED,-Exception</prop> -->
-<!-- 				<prop key="*">readOnly</prop> -->
-<!-- 			</props> -->
-<!-- 		</property> -->
-<!--     </bean> -->
-
 	<tx:advice id="txAdvice" transaction-manager="transactionManager">
 		<tx:attributes>
 			<tx:method name="set*" propagation="REQUIRED" rollback-for="Exception" />
@@ -105,11 +94,8 @@
 		</tx:attributes>
 	</tx:advice>
 
-<!-- 	<bean id="readWriteDataSourceTransactionProcessor" -->
-<!-- 		class="cn.featherfly.jdbc.datasource.ReadWriteDataSourceProcessor" -->
-<!-- 		p:forceChoiceReadWhenWrite="false"/> -->
 	<bean id="readWriteDataSourceTransactionProcessor"
-		class="cn.featherfly.jdbc.datasource.ReadWriteDataSourceProcessor2"
+		class="cn.featherfly.jdbc.datasource.ReadWriteDataSourceProcessor"
 		p:forceChoiceReadWhenWrite="false" p:transactionAspectSupport-ref="txAdvice"/>
 
 	<aop:config>

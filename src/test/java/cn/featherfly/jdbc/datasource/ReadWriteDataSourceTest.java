@@ -3,11 +3,9 @@ package cn.featherfly.jdbc.datasource;
 import javax.annotation.Resource;
 
 import org.apache.log4j.xml.DOMConfigurator;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -37,13 +35,19 @@ public class ReadWriteDataSourceTest extends AbstractTestNGSpringContextTests {
         DOMConfigurator.configure(ClassLoaderUtils.getResource("log4j.xml", this.getClass()));
     }
     
+    private User create() {
+        User user = new User();
+        user.setUsername("name_" + RandomUtils.getRandomInt(1000));
+        return user;
+    }
+    
     @Test
     public void testWriteRead() {
         
         System.out.println(userService.get(1000001l));
         
-        User user = new User();
-        user.setUsername("name_" + RandomUtils.getRandomInt(1000));
+        User user = create();
+                
         User wu = userService.save(user);
 //        user = new User();
 //        user.setUsername("name_" + RandomUtils.getRandomInt(1000));
@@ -53,13 +57,16 @@ public class ReadWriteDataSourceTest extends AbstractTestNGSpringContextTests {
 //        userService.save(user);
         
 //        userService.save2(user);
-        
+                
         Assert.assertEquals(wu.getUsername(), user.getUsername());
         
         User ru  = userService.get(user.getId());
         Assert.assertNull(ru);
         
         
-        System.out.println(userService.get(1000001l));
+        ru = userService.get(1000001l);
+        System.err.println(ru);
+        
+        userService.saveWithException(create(), create());
     }
 }
