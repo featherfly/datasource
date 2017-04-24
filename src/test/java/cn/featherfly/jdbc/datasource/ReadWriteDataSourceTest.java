@@ -55,8 +55,13 @@ public class ReadWriteDataSourceTest extends AbstractTestNGSpringContextTests {
     
     @Test(expectedExceptions = DuplicateKeyException.class)
     public void testUser() {
+        User u1 = create();
+        User u2 = create();
+        u1.setUsername("user_" + RandomUtils.getRandomInt(10000));        
+        u2.setUsername("user_" + RandomUtils.getRandomInt(10000));        
+        userService.user(u1, u2);
+
         User user = create();
-//        userService.user(user, create());
         userService.user(user, user);
     }
     
@@ -64,7 +69,7 @@ public class ReadWriteDataSourceTest extends AbstractTestNGSpringContextTests {
     public void testReadOnly() {
         userService.getAndSave(1000001l);
     }
-
+    
     @Test(expectedExceptions = RuntimeException.class)
     public void testSaveWithException() {
         userService.saveWithException(create(), create());

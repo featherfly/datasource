@@ -58,7 +58,7 @@ public class UserService {
     
     @Transactional
     public void exceptionTransactional(User u1, User u2) {
-        System.out.println("invoke exceptionTransactional");
+        System.out.println("invoke exceptionTransactional(u1, u2)");
         save(u1);
         save(u2);
         throw new RuntimeException("saveWithException exception");
@@ -66,7 +66,7 @@ public class UserService {
     
     @Transactional
     public void user(User u1, User u2) {
-        System.out.println("invoke user");
+        System.out.println("invoke user(u1, u2)");
         save(u1);
         save(u2);
     }
