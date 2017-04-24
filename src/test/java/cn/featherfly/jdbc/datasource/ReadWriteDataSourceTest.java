@@ -3,9 +3,13 @@ package cn.featherfly.jdbc.datasource;
 import javax.annotation.Resource;
 
 import org.apache.log4j.xml.DOMConfigurator;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.transaction.interceptor.TransactionAttributeSource;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -33,6 +37,9 @@ public class ReadWriteDataSourceTest extends AbstractTestNGSpringContextTests {
     @BeforeClass
     public void init() {
         DOMConfigurator.configure(ClassLoaderUtils.getResource("log4j.xml", this.getClass()));
+        System.err.println(applicationContext.getBeansOfType(TransactionAttributeSource.class));
+        System.err.println(applicationContext.getBeansOfType(TransactionAspectSupport.class));
+        
     }
     
     private User create() {
@@ -41,32 +48,44 @@ public class ReadWriteDataSourceTest extends AbstractTestNGSpringContextTests {
         return user;
     }
     
+    @Test(expectedExceptions = ReadWriteDataSourceTransactionException.class)
+    public void testNoTransactional() {
+        userService.noTransactional(create(), create());
+    }
+    
+    @Test(expectedExceptions = DuplicateKeyException.class)
+    public void testUser() {
+        User user = create();
+//        userService.user(user, create());
+        userService.user(user, user);
+    }
+    
+    @Test(expectedExceptions = TransientDataAccessResourceException.class)
+    public void testReadOnly() {
+        userService.getAndSave(1000001l);
+    }
+
+    @Test(expectedExceptions = RuntimeException.class)
+    public void testSaveWithException() {
+        userService.saveWithException(create(), create());
+    }
+
     @Test
     public void testWriteRead() {
-        
         System.out.println(userService.get(1000001l));
         
         User user = create();
                 
         User wu = userService.save(user);
-//        user = new User();
-//        user.setUsername("name_" + RandomUtils.getRandomInt(1000));
-//        userService.save(user);
-//        user = new User();
-//        user.setUsername("name_" + RandomUtils.getRandomInt(1000));
-//        userService.save(user);
-        
-//        userService.save2(user);
                 
         Assert.assertEquals(wu.getUsername(), user.getUsername());
         
-        User ru  = userService.get(user.getId());
+        User ru  = userService.get(user.getId());        
         Assert.assertNull(ru);
         
         
         ru = userService.get(1000001l);
+        Assert.assertEquals(ru.getUsername(), "name1_r");
         System.err.println(ru);
-        
-        userService.saveWithException(create(), create());
     }
 }

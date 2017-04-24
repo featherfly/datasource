@@ -71,6 +71,8 @@
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 	
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+	
 	<tx:advice id="txAdvice" transaction-manager="transactionManager">
 		<tx:attributes>
 			<tx:method name="set*" propagation="REQUIRED" rollback-for="Exception" />
@@ -96,14 +98,14 @@
 
 	<bean id="readWriteDataSourceTransactionProcessor"
 		class="cn.featherfly.jdbc.datasource.ReadWriteDataSourceProcessor"
-		p:forceChoiceReadWhenWrite="false" p:transactionAspectSupport-ref="txAdvice"/>
+		p:forceChoiceReadWhenWrite="false"/>
 
 	<aop:config>
 		<aop:pointcut id="txPointcut" expression="execution(* *..service..*.*(..))" />
 		<aop:advisor pointcut-ref="txPointcut" advice-ref="txAdvice" />
 		<!-- 通过AOP切面实现读/写库选择 -->
 		<aop:aspect order="-2147483648" ref="readWriteDataSourceTransactionProcessor">
-		<aop:around pointcut-ref="txPointcut" method="determineReadOrWriteDB"/>
+		  <aop:around pointcut-ref="txPointcut" method="determineReadOrWriteDB"/>
 		</aop:aspect>
 	</aop:config>
 </beans>

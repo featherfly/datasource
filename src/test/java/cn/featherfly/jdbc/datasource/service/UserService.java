@@ -42,9 +42,44 @@ public class UserService {
         throw new RuntimeException("saveWithException exception");
     }
     
+    public void exception(User u1, User u2) {
+        System.out.println("invoke exception");
+        save(u1);
+        save(u2);
+        throw new RuntimeException("exception exception");
+    }
+    
+    public void noTransactional(User u1, User u2) {
+        System.out.println("invoke noTransactional");
+        save(u1);
+        save(u2);
+        throw new RuntimeException("noTransactional exception");
+    }
+    
+    @Transactional
+    public void exceptionTransactional(User u1, User u2) {
+        System.out.println("invoke exceptionTransactional");
+        save(u1);
+        save(u2);
+        throw new RuntimeException("saveWithException exception");
+    }
+    
+    @Transactional
+    public void user(User u1, User u2) {
+        System.out.println("invoke user");
+        save(u1);
+        save(u2);
+    }
+    
     @Transactional(readOnly = true)
     public User get(Long id) {
         System.out.println("invoke get");
         return jdbcPersistence.get(id, User.class);
+    }
+    
+    public User getAndSave(Long id) {
+        System.out.println("invoke get");
+        User u = jdbcPersistence.get(id, User.class);
+        return save(u);
     }
 }

@@ -1,12 +1,23 @@
 package cn.featherfly.jdbc.datasource;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.transaction.interceptor.CompositeTransactionAttributeSource;
 import org.springframework.transaction.interceptor.RuleBasedTransactionAttribute;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.transaction.interceptor.TransactionAttribute;
+import org.springframework.transaction.interceptor.TransactionAttributeSource;
+
+import cn.featherfly.common.lang.CollectionUtils;
 
 /**
  * 
@@ -69,13 +80,14 @@ import org.springframework.transaction.interceptor.TransactionAttribute;
  * 
  * </pre>
  */
-public class ReadWriteDataSourceProcessor {
+public class ReadWriteDataSourceProcessor implements ApplicationContextAware{
+    
 
     private static final Logger log = LoggerFactory.getLogger(ReadWriteDataSourceProcessor.class);
 
     private boolean forceChoiceReadWhenWrite = false;
-
-    private TransactionAspectSupport transactionAspectSupport;
+    
+    private TransactionAttributeSource transactionAttributeSource;
 
     /**
      * 当之前操作是写的时候，是否强制从从库读 默认（false） 当之前操作是写，默认强制从写库读
@@ -90,29 +102,33 @@ public class ReadWriteDataSourceProcessor {
         if (pjp.getSignature() instanceof MethodSignature) {
             MethodSignature methodSignature = (MethodSignature) pjp.getSignature();
 
-            final RuleBasedTransactionAttribute txAttr = (RuleBasedTransactionAttribute) transactionAspectSupport
-                    .getTransactionAttributeSource()
+            final RuleBasedTransactionAttribute txAttr = (RuleBasedTransactionAttribute) transactionAttributeSource
                     .getTransactionAttribute(methodSignature.getMethod(), pjp.getSignature().getDeclaringType());
-            
+
+            if (txAttr == null) {
+                throw new ReadWriteDataSourceTransactionException("there is no transaction for "
+                        + methodSignature.getMethod());
+            }
+
             boolean choice = false;
             if (ReadWriteDataSourceDecision.isChoiceNone()) {
                 // 表示第一个标记，事物可能嵌套，所有只有第一个标记的才才能进行清除
                 choice = true;
             }
-            
+
             if (isChoiceReadDB(txAttr)) {
                 ReadWriteDataSourceDecision.markRead();
-                log.debug("read transaction process for {}.{}", pjp.getSignature().getDeclaringTypeName()
-                        , pjp.getSignature().getName());
+                log.debug("read transaction process for {}.{}", pjp.getSignature().getDeclaringTypeName(),
+                        pjp.getSignature().getName());
             } else {
                 ReadWriteDataSourceDecision.markWrite();
-                log.debug("write transaction process for {}.{}", pjp.getSignature().getDeclaringTypeName()
-                        , pjp.getSignature().getName());
+                log.debug("write transaction process for {}.{}", pjp.getSignature().getDeclaringTypeName(),
+                        pjp.getSignature().getName());
             }
 
             try {
                 return pjp.proceed();
-            } finally {
+            } finally {                
                 if (choice) {
                     ReadWriteDataSourceDecision.reset();
                 }
@@ -124,32 +140,34 @@ public class ReadWriteDataSourceProcessor {
 
     private boolean isChoiceReadDB(TransactionAttribute txAttr) {
         if (forceChoiceReadWhenWrite) {
-            //不管之前操作是读还是写，默认强制从读库读 （设置为NOT_SUPPORTED即可）
+            // 不管之前操作是读还是写，默认强制从读库读 （设置为NOT_SUPPORTED即可）
             return true;
         }
-        if(ReadWriteDataSourceDecision.isChoiceWrite()) {
-            //如果之前选择了写库 现在还选择 写库
+        if (ReadWriteDataSourceDecision.isChoiceWrite()) {
+            // 如果之前选择了写库 现在还选择 写库
             return false;
         }
         return txAttr.isReadOnly();
     }
 
     /**
-     * 返回transactionAspectSupport
-     * 
-     * @return transactionAspectSupport
+     * {@inheritDoc}
      */
-    public TransactionAspectSupport getTransactionAspectSupport() {
-        return transactionAspectSupport;
-    }
-
-    /**
-     * 设置transactionAspectSupport
-     * 
-     * @param transactionAspectSupport
-     *            transactionAspectSupport
-     */
-    public void setTransactionAspectSupport(TransactionAspectSupport transactionAspectSupport) {
-        this.transactionAspectSupport = transactionAspectSupport;
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        Collection<TransactionAspectSupport> ts = applicationContext.getBeansOfType(TransactionAspectSupport.class).values();
+        
+        List<TransactionAttributeSource> tas = new ArrayList<>();
+        for (TransactionAspectSupport t : ts) {
+            tas.add(t.getTransactionAttributeSource());
+        }
+        
+        if (tas.size() == 1) {
+            this.transactionAttributeSource = tas.get(0);
+        } else if (ts.size() > 1) {
+            transactionAttributeSource = new CompositeTransactionAttributeSource(
+                    CollectionUtils.toArray(tas, TransactionAttributeSource.class)
+                    );
+        }
     }
 }
