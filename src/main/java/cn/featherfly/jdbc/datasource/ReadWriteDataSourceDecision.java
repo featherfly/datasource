@@ -8,37 +8,89 @@ package cn.featherfly.jdbc.datasource;
  * 通过ThreadLocal绑定实现选择功能
  * </pre>
  */
-public class ReadWriteDataSourceDecision {
+public final class ReadWriteDataSourceDecision {
     
-    public enum DataSourceType {
-        write, read;
+    /**
+     */
+    private ReadWriteDataSourceDecision() {
     }
-    
-    
-    private static final ThreadLocal<DataSourceType> holder = new ThreadLocal<DataSourceType>();
 
+    /**
+     * <p>
+     * DataSourceType
+     * </p>
+     * 
+     * @author 钟冀
+     */
+    public enum DataSourceType {
+        /**
+         * 写
+         */
+        WRITE,
+        /**
+         * 读
+         */
+        READ;
+    }
+    
+    
+    private static final ThreadLocal<DataSourceType> HOLDER = new ThreadLocal<DataSourceType>();
+
+    /**
+     * <p>
+     * 标记写
+     * </p>
+     */
     public static void markWrite() {
-        holder.set(DataSourceType.write);
+        HOLDER.set(DataSourceType.WRITE);
     }
     
+    /**
+     * <p>
+     * 标记读
+     * </p>
+     */
     public static void markRead() {
-        holder.set(DataSourceType.read);
+        HOLDER.set(DataSourceType.READ);
     }
     
+    /**
+     * <p>
+     * 重置标记
+     * </p>
+     */
     public static void reset() {
-        holder.set(null);
+        HOLDER.set(null);
     }
     
+    /**
+     * <p>
+     * 是否标记
+     * </p>
+     * @return 是否标记
+     */
     public static boolean isChoiceNone() {
-        return null == holder.get(); 
+        return null == HOLDER.get(); 
     }
     
+    /**
+     * <p>
+     * 是否标记写
+     * </p>
+     * @return 是否标记写
+     */
     public static boolean isChoiceWrite() {
-        return DataSourceType.write == holder.get();
+        return DataSourceType.WRITE == HOLDER.get();
     }
     
+    /**
+     * <p>
+     * 是否标记读
+     * </p>
+     * @return 是否标记读
+     */
     public static boolean isChoiceRead() {
-        return DataSourceType.read == holder.get();
+        return DataSourceType.READ == HOLDER.get();
     }
 
 }

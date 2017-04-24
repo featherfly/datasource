@@ -8,8 +8,6 @@ import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
-import org.springframework.transaction.interceptor.TransactionAttributeSource;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -37,8 +35,8 @@ public class ReadWriteDataSourceTest extends AbstractTestNGSpringContextTests {
     @BeforeClass
     public void init() {
         DOMConfigurator.configure(ClassLoaderUtils.getResource("log4j.xml", this.getClass()));
-        System.err.println(applicationContext.getBeansOfType(TransactionAttributeSource.class));
-        System.err.println(applicationContext.getBeansOfType(TransactionAspectSupport.class));
+//        System.err.println(applicationContext.getBeansOfType(TransactionAttributeSource.class));
+//        System.err.println(applicationContext.getBeansOfType(TransactionAspectSupport.class));
         
     }
     
@@ -69,7 +67,7 @@ public class ReadWriteDataSourceTest extends AbstractTestNGSpringContextTests {
     public void testReadOnly() {
         userService.getAndSave(1000001l);
     }
-    
+
     @Test(expectedExceptions = RuntimeException.class)
     public void testSaveWithException() {
         userService.saveWithException(create(), create());
@@ -81,7 +79,7 @@ public class ReadWriteDataSourceTest extends AbstractTestNGSpringContextTests {
         
         User user = create();
                 
-        User wu = userService.save(user);
+        User wu = userService.saveAndGet(user);
                 
         Assert.assertEquals(wu.getUsername(), user.getUsername());
         

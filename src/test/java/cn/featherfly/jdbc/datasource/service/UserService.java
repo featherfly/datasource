@@ -23,14 +23,13 @@ public class UserService {
     JdbcPersistence jdbcPersistence;
     
     @Transactional
-    public User save(User user) {
+    public void save(User user) {
         System.out.println("invoke save");
         jdbcPersistence.save(user);
-        return get(user.getId());
     }
     
-    public User save1(User user) {
-        System.out.println("invoke save1");
+    public User saveAndGet(User user) {
+        System.out.println("invoke saveAndGet");
         jdbcPersistence.save(user);
         return get(user.getId());
     }
@@ -78,8 +77,8 @@ public class UserService {
     }
     
     public User getAndSave(Long id) {
-        System.out.println("invoke get");
+        System.out.println("invoke getAndSave");
         User u = jdbcPersistence.get(id, User.class);
-        return save(u);
+        return this.saveAndGet(u);
     }
 }
