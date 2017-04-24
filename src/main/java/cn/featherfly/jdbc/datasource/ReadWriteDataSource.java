@@ -1,19 +1,18 @@
 package cn.featherfly.jdbc.datasource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.jdbc.datasource.AbstractDataSource;
-import org.springframework.util.CollectionUtils;
-
-import cn.featherfly.common.lang.LangUtils;
-
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.sql.DataSource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.jdbc.datasource.AbstractDataSource;
+import org.springframework.util.CollectionUtils;
 
 /**
  * 
