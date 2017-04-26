@@ -1,4 +1,4 @@
-package cn.featherfly.jdbc.datasource;
+package cn.featherfly.jdbc.rwds;
 
 import org.springframework.core.NestedRuntimeException;
 

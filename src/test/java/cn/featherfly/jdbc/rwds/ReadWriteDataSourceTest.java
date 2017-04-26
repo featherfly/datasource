@@ -1,4 +1,4 @@
-package cn.featherfly.jdbc.datasource;
+package cn.featherfly.jdbc.rwds;
 
 import javax.annotation.Resource;
 
@@ -14,7 +14,8 @@ import org.testng.annotations.Test;
 
 import cn.featherfly.common.lang.ClassLoaderUtils;
 import cn.featherfly.common.lang.RandomUtils;
-import cn.featherfly.jdbc.datasource.service.UserService;
+import cn.featherfly.jdbc.rwds.ReadWriteDataSourceTransactionException;
+import cn.featherfly.jdbc.rwds.service.UserService;
 
 /**
  * <p>

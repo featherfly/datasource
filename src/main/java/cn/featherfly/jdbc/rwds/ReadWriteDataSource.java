@@ -1,4 +1,4 @@
-package cn.featherfly.jdbc.datasource;
+package cn.featherfly.jdbc.rwds;
 
 import java.sql.Connection;
 import java.sql.SQLException;

@@ -1,5 +1,5 @@
 
-package cn.featherfly.jdbc.datasource;
+package cn.featherfly.jdbc.rwds;
 
 import javax.persistence.Id;
 import javax.persistence.Table;

@@ -1,12 +1,12 @@
 
-package cn.featherfly.jdbc.datasource.service;
+package cn.featherfly.jdbc.rwds.service;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import cn.featherfly.jdbc.datasource.User;
+import cn.featherfly.jdbc.rwds.User;
 import cn.featherfly.persistence.jdbc.JdbcPersistence;
 
 /**

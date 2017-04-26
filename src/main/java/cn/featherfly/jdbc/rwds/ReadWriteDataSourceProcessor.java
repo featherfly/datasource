@@ -1,4 +1,4 @@
-package cn.featherfly.jdbc.datasource;
+package cn.featherfly.jdbc.rwds;
 
 import java.util.ArrayList;
 import java.util.Collection;

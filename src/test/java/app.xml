@@ -19,7 +19,7 @@
 	<context:property-placeholder location="classpath:datasource.properties" />
 
 	<!-- 数据源 -->
-	<bean id="dataSource" class="cn.featherfly.jdbc.datasource.ReadWriteDataSource"
+	<bean id="dataSource" class="cn.featherfly.jdbc.rwds.ReadWriteDataSource"
 		p:writeDataSource-ref="writeDataSource" p:readDataSourceMap-ref="readDataSourceMap" />
 
 	<bean id="writeDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
@@ -97,7 +97,7 @@
 	</tx:advice>
 
 	<bean id="readWriteDataSourceTransactionProcessor"
-		class="cn.featherfly.jdbc.datasource.ReadWriteDataSourceProcessor"
+		class="cn.featherfly.jdbc.rwds.ReadWriteDataSourceProcessor"
 		p:forceChoiceReadWhenWrite="false"/>
 
 	<aop:config>
