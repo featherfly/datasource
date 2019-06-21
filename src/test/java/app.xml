@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
-	xmlns:util="http://www.springframework.org/schema/util" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
@@ -15,14 +17,19 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd">
 
-	<context:component-scan base-package="cn.featherfly" />
-	<context:property-placeholder location="classpath:datasource.properties" />
+	<context:component-scan
+		base-package="cn.featherfly" />
+	<context:property-placeholder
+		location="classpath:datasource.properties" />
 
 	<!-- 数据源 -->
-	<bean id="dataSource" class="cn.featherfly.jdbc.rwds.ReadWriteDataSource"
-		p:writeDataSource-ref="writeDataSource" p:readDataSourceMap-ref="readDataSourceMap" />
+	<bean id="dataSource"
+		class="cn.featherfly.jdbc.rwds.ReadWriteDataSource"
+		p:writeDataSource-ref="writeDataSource"
+		p:readDataSourceMap-ref="readDataSourceMap" />
 
-	<bean id="writeDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+	<bean id="writeDataSource"
+		class="com.mchange.v2.c3p0.ComboPooledDataSource"
 		destroy-method="close">
 		<property name="driverClass" value="${write.driverClassName}" />
 		<property name="jdbcUrl" value="${write.url}" />
@@ -30,35 +37,88 @@
 		<property name="password" value="${write.password}" />
 		<property name="minPoolSize" value="${write.minPoolSize}" />
 		<property name="maxPoolSize" value="${write.maxPoolSize}" />
-		<property name="initialPoolSize" value="${write.initialPoolSize}" />
+		<property name="initialPoolSize"
+			value="${write.initialPoolSize}" />
 		<property name="maxIdleTime" value="${write.maxIdleTime}" />
-		<property name="acquireIncrement" value="${write.acquireIncrement}" />
-		<property name="testConnectionOnCheckin" value="${write.testConnectionOnCheckin}" />
-		<property name="idleConnectionTestPeriod" value="${write.idleConnectionTestPeriod}" />
+		<property name="acquireIncrement"
+			value="${write.acquireIncrement}" />
+		<property name="testConnectionOnCheckin"
+			value="${write.testConnectionOnCheckin}" />
+		<property name="idleConnectionTestPeriod"
+			value="${write.idleConnectionTestPeriod}" />
 	</bean>
 
 	<util:map id="readDataSourceMap">
 		<entry key="readDataSource1">
 			<bean class="com.mchange.v2.c3p0.ComboPooledDataSource"
 				destroy-method="close">
-				<property name="driverClass" value="${read.driverClassName}" />
+				<property name="driverClass"
+					value="${read.driverClassName}" />
 				<property name="jdbcUrl" value="${read.url}" />
 				<property name="user" value="${read.username}" />
 				<property name="password" value="${read.password}" />
 				<property name="minPoolSize" value="${read.minPoolSize}" />
 				<property name="maxPoolSize" value="${read.maxPoolSize}" />
-				<property name="initialPoolSize" value="${read.initialPoolSize}" />
+				<property name="initialPoolSize"
+					value="${read.initialPoolSize}" />
 				<property name="maxIdleTime" value="${read.maxIdleTime}" />
-				<property name="acquireIncrement" value="${read.acquireIncrement}" />
-				<property name="testConnectionOnCheckin" value="${read.testConnectionOnCheckin}" />
-				<property name="idleConnectionTestPeriod" value="${read.idleConnectionTestPeriod}" />
+				<property name="acquireIncrement"
+					value="${read.acquireIncrement}" />
+				<property name="testConnectionOnCheckin"
+					value="${read.testConnectionOnCheckin}" />
+				<property name="idleConnectionTestPeriod"
+					value="${read.idleConnectionTestPeriod}" />
 			</bean>
 		</entry>
+		<entry key="readDataSource2">
+            <bean class="com.mchange.v2.c3p0.ComboPooledDataSource"
+                destroy-method="close">
+                <property name="driverClass"
+                    value="${read1.driverClassName}" />
+                <property name="jdbcUrl" value="${read1.url}" />
+                <property name="user" value="${read1.username}" />
+                <property name="password" value="${read1.password}" />
+                <property name="minPoolSize" value="${read1.minPoolSize}" />
+                <property name="maxPoolSize" value="${read1.maxPoolSize}" />
+                <property name="initialPoolSize"
+                    value="${read1.initialPoolSize}" />
+                <property name="maxIdleTime" value="${read1.maxIdleTime}" />
+                <property name="acquireIncrement"
+                    value="${read1.acquireIncrement}" />
+                <property name="testConnectionOnCheckin"
+                    value="${read1.testConnectionOnCheckin}" />
+                <property name="idleConnectionTestPeriod"
+                    value="${read1.idleConnectionTestPeriod}" />
+            </bean>
+        </entry>
+        <entry key="readDataSource3">
+            <bean class="com.mchange.v2.c3p0.ComboPooledDataSource"
+                destroy-method="close">
+                <property name="driverClass"
+                    value="${read2.driverClassName}" />
+                <property name="jdbcUrl" value="${read2.url}" />
+                <property name="user" value="${read2.username}" />
+                <property name="password" value="${read2.password}" />
+                <property name="minPoolSize" value="${read2.minPoolSize}" />
+                <property name="maxPoolSize" value="${read2.maxPoolSize}" />
+                <property name="initialPoolSize"
+                    value="${read2.initialPoolSize}" />
+                <property name="maxIdleTime" value="${read2.maxIdleTime}" />
+                <property name="acquireIncrement"
+                    value="${read2.acquireIncrement}" />
+                <property name="testConnectionOnCheckin"
+                    value="${read2.testConnectionOnCheckin}" />
+                <property name="idleConnectionTestPeriod"
+                    value="${read2.idleConnectionTestPeriod}" />
+            </bean>
+        </entry>
 	</util:map>
 
-	<bean id="dialect" class="cn.featherfly.common.db.dialect.MySqlDialect">
+	<bean id="dialect"
+		class="cn.featherfly.common.db.dialect.MySqlDialect">
 	</bean>
-	<bean id="jdbcPersistence" class="cn.featherfly.persistence.jdbc.JdbcPersistenceImpl">
+	<bean id="jdbcPersistence"
+		class="cn.featherfly.persistence.jdbc.JdbcPersistenceImpl">
 		<property name="dataSource" ref="dataSource" />
 		<property name="simpleORMFactory">
 			<bean class="cn.featherfly.component.sorm.SimpleORMFactory" />
@@ -70,12 +130,15 @@
 		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource" />
 	</bean>
-	
-	<tx:annotation-driven transaction-manager="transactionManager"/>
-	
-	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+
+	<tx:annotation-driven
+		transaction-manager="transactionManager" />
+
+	<tx:advice id="txAdvice"
+		transaction-manager="transactionManager">
 		<tx:attributes>
-			<tx:method name="set*" propagation="REQUIRED" rollback-for="Exception" />
+			<tx:method name="set*" propagation="REQUIRED"
+				rollback-for="Exception" />
 			<tx:method name="save*" propagation="REQUIRED"
 				rollback-for="Exception" />
 			<tx:method name="update*" propagation="REQUIRED"
@@ -93,19 +156,24 @@
 			<tx:method name="check*" read-only="true" />
 			<tx:method name="verifi*" read-only="true" />
 			<tx:method name="search*" read-only="true" />
+			<tx:method name="*" read-only="true" />
 		</tx:attributes>
 	</tx:advice>
 
 	<bean id="readWriteDataSourceTransactionProcessor"
 		class="cn.featherfly.jdbc.rwds.ReadWriteDataSourceProcessor"
-		p:forceChoiceReadWhenWrite="false"/>
+		p:forceChoiceReadWhenWrite="false" />
 
 	<aop:config>
-		<aop:pointcut id="txPointcut" expression="execution(* *..service..*.*(..))" />
-		<aop:advisor pointcut-ref="txPointcut" advice-ref="txAdvice" />
+		<aop:pointcut id="txPointcut"
+			expression="execution(* *..service..*.*(..))" />
+		<aop:advisor pointcut-ref="txPointcut"
+			advice-ref="txAdvice" />
 		<!-- 通过AOP切面实现读/写库选择 -->
-		<aop:aspect order="-2147483648" ref="readWriteDataSourceTransactionProcessor">
-		  <aop:around pointcut-ref="txPointcut" method="determineReadOrWriteDB"/>
+		<aop:aspect order="-2147483648"
+			ref="readWriteDataSourceTransactionProcessor">
+			<aop:around pointcut-ref="txPointcut"
+				method="determineReadOrWriteDB" />
 		</aop:aspect>
 	</aop:config>
 </beans>

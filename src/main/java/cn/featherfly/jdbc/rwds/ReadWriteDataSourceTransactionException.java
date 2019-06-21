@@ -1,6 +1,6 @@
 package cn.featherfly.jdbc.rwds;
 
-import org.springframework.core.NestedRuntimeException;
+import org.springframework.dao.DataAccessException;
 
 /**
  * <p>
@@ -9,7 +9,7 @@ import org.springframework.core.NestedRuntimeException;
  * 
  * @author zhongj
  */
-public class ReadWriteDataSourceTransactionException extends NestedRuntimeException {
+public class ReadWriteDataSourceTransactionException extends DataAccessException {
 
     private static final long serialVersionUID = -263482866844988907L;
     

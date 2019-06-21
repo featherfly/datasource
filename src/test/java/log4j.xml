@@ -9,7 +9,7 @@
         </layout>
     </appender>
 
-    <logger name="cn.featherfly.jdbc.datasource" additivity="true">
+    <logger name="cn.featherfly.jdbc" additivity="false">
         <level value="trace"/>
         <appender-ref ref="console"/>
     </logger>

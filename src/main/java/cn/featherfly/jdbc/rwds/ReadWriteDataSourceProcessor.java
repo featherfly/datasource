@@ -117,7 +117,7 @@ public class ReadWriteDataSourceProcessor implements ApplicationContextAware {
     public Object determineReadOrWriteDB(ProceedingJoinPoint pjp) throws Throwable {
         if (pjp.getSignature() instanceof MethodSignature) {
             MethodSignature methodSignature = (MethodSignature) pjp.getSignature();
-
+           
             final RuleBasedTransactionAttribute txAttr = (RuleBasedTransactionAttribute) transactionAttributeSource
                     .getTransactionAttribute(methodSignature.getMethod(), pjp.getSignature().getDeclaringType());
 
@@ -125,8 +125,9 @@ public class ReadWriteDataSourceProcessor implements ApplicationContextAware {
                 throw new ReadWriteDataSourceTransactionException(
                         "there is no transaction for " + methodSignature.getMethod());
             }
-
-            LOG.debug("{} with TransactionAttribute {}", pjp.getSignature().toString(), txAttr.toString());
+            
+            LOG.debug("{} with TransactionAttribute {}", methodSignature.getMethod().toString(), txAttr.toString());
+            
             boolean choice = false;
             if (ReadWriteDataSourceDecision.isChoiceNone()) {
                 // 表示第一个标记，事物可能嵌套，所有只有第一个标记的才才能进行清除
@@ -134,12 +135,10 @@ public class ReadWriteDataSourceProcessor implements ApplicationContextAware {
             }
             if (isChoiceReadDB(txAttr)) {
                 ReadWriteDataSourceDecision.markRead();
-                LOG.debug("read transaction process for {}.{}", pjp.getSignature().getDeclaringTypeName(),
-                        pjp.getSignature().getName());
+                LOG.debug("read transaction process for {}", methodSignature.getMethod().toString());
             } else {
                 ReadWriteDataSourceDecision.markWrite();
-                LOG.debug("write transaction process for {}.{}", pjp.getSignature().getDeclaringTypeName(),
-                        pjp.getSignature().getName());
+                LOG.debug("write transaction process for {}", methodSignature.getMethod().toString());
             }
 
             try {
@@ -153,14 +152,13 @@ public class ReadWriteDataSourceProcessor implements ApplicationContextAware {
 
         throw new ReadWriteDataSourceTransactionException("! pjp.getSignature() instanceof MethodSignature");
     }
-
+    
     private boolean isChoiceReadDB(RuleBasedTransactionAttribute txAttr) {
+        LOG.debug("ReadWriteDataSourceDecision.isChoiceNone {}", ReadWriteDataSourceDecision.isChoiceNone());
         if (ReadWriteDataSourceDecision.isChoiceNone()) {
             // 没有标记读写，使用第一个调用的事务确定读写
             return txAttr.isReadOnly();
         } else {
-            // FIXME 这里现在都没有进入，也就是一单事务确定后，后续就不再进入此Processor了
-            
             // 嵌套调用,已经确定最外层的事务了
             if (forceChoiceReadWhenWrite) {
                 // 不管之前操作是读还是写，默认强制从读库读 （设置为NOT_SUPPORTED即可）
