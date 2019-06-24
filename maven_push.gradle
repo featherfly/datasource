@@ -27,7 +27,6 @@ def getRepositoryPassword() {
     return hasProperty('nexusPassword') ? nexusPassword : ""
 }
 
-afterEvaluate { project ->
     task sourcesJar(type: Jar) {
         classifier = 'sources'
         from sourceSets.main.java.srcDirs
@@ -45,11 +44,11 @@ afterEvaluate { project ->
     
                 artifact sourcesJar
                 artifact javadocJar
-                
+                groupId = group
+                artifactId = archivesBaseName
+                version = version
                 pom {
-                    name = project.name
-                    groupId = groupId
-                    version = version
+                    name = archivesBaseName
                     packaging = POM_Packaging
                     description = POM_DESCRIPTION
                     url = POM_URL
@@ -90,10 +89,7 @@ afterEvaluate { project ->
     }
 
     signing {
-        required { isReleaseBuild() && gradle.taskGraph.hasTask("uploadArchives") }
+        //required { isReleaseBuild() && gradle.taskGraph.hasTask("uploadArchives") }
         //sign configurations.archives
         sign publishing.publications.mavenJava
     }
-
-    
-}

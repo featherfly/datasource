@@ -20,7 +20,7 @@ public final class ReadWriteDataSourceDecision {
      * DataSourceType
      * </p>
      * 
-     * @author 钟冀
+     * @author zhongj
      */
     public enum DataSourceType {
         /**

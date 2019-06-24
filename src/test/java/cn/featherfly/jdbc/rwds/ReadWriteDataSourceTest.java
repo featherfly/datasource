@@ -24,7 +24,7 @@ import cn.featherfly.jdbc.rwds.service.UserService2;
  * ReadWriteDataSourceTest
  * </p>
  * 
- * @author 钟冀
+ * @author zhongj
  */
 @ContextConfiguration(locations = {"classpath:app.xml"})
 @ActiveProfiles("dev")

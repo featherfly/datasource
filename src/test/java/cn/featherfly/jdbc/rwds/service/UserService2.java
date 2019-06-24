@@ -14,7 +14,7 @@ import cn.featherfly.persistence.jdbc.JdbcPersistence;
  * UserService
  * </p>
  * 
- * @author 钟冀
+ * @author zhongj
  */
 @Service
 public class UserService2 {
