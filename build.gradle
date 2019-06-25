@@ -1,17 +1,5 @@
-apply plugin: 'java'
-
-apply from: './java_base.gradle'
-apply from: './maven_push.gradle'
-
-repositories {
-	maven {
-		url  ant.properties['user.home'] +  "/.m2/repository"
-	}
-    maven {
-		url  "http://maven.aliyun.com/nexus/content/groups/public/"
-	}
-    mavenCentral()
-}
+apply from: './gradle/java_base.gradle'
+apply from: './gradle/maven_push.gradle'
 
 dependencies {    
     compile 'cn.featherfly:featherfly-common:1.6.0'
